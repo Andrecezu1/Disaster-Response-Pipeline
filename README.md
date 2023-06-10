@@ -2,14 +2,30 @@
 ### Table of Contents
 
 1. [Installation](#installation)
-2. [Project Motivation](#motivation)
-3. [File Descriptions](#files)
-4. [Results](#results)
-5. [Licensing, Authors, and Acknowledgements](#licensing)
+2. [Execution instructiones](#execution)
+3. [Project Motivation](#motivation)
+4. [File Descriptions](#files)
+5. [Results](#results)
+6. [Licensing, Authors, and Acknowledgements](#licensing)
 
 ## Installation <a name="installation"></a>
 
 There should be no necessary libraries to run the code here beyond the Anaconda distribution of Python.  The code should run with no issues using Python versions 3.*.
+
+## Execution instructions <a name="execution"></a>
+
+1. Run the following commands in the project's root directory to set up your database and model.
+
+    - To run ETL pipeline that cleans data and stores in database
+        `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
+    - To run ML pipeline that trains classifier and saves
+        `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+
+2. Go to `app` directory: `cd app`
+
+3. Run your web app: `python run.py`
+
+4. Click the `PREVIEW` button to open the homepage
 
 ## Project Motivation<a name="motivation"></a>
 
