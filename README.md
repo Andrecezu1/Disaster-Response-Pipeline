@@ -13,11 +13,7 @@ There should be no necessary libraries to run the code here beyond the Anaconda 
 
 ## Project Motivation<a name="motivation"></a>
 
-When a disaster occurs, there is a need of instantanious information in order to deploy the emergency response forces. In this project I analyze the messages shared during a disaster, build a text processing pipeline and answer the following questions with the analysis made:
-
-1. ¿AAA?
-2. ¿BBB?
-3. ¿CCC?
+When a disaster occurs, there is a need of instantanious information in order to deploy the emergency response forces. In this project I analyze the messages shared during a disaster, build a text processing pipeline to classify the messages delivered when a dissaster occurs.
 
 The data was given by Udacity and consist in four files:
 1. categories.csv
