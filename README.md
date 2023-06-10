@@ -43,10 +43,11 @@ There are two (2) notebooks and one zip file:
 1. "ETL Pipeline Preparation.ipynb" is the ETL pipeline used to prepare the data.
 2. "ML Pipeline Preparation.ipynb" is the pipeline that trains a classifier to analyze the data.
 3. "home.zip" is a folder that contains the code to develop the project.
+4. "Disasters.html"  is the web page where the search can be done.
 
 ## Results<a name="results"></a>
 
-The main findings of the code can be found at the web page found [here](https://zcgul5pd42.prod.udacity-student-workspaces.com/).
+The main findings of the code can be found at the web page found in the Disasters.html file.
 
 ## Licensing, Authors, Acknowledgements<a name="licensing"></a>
 
