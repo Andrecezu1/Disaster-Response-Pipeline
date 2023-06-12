@@ -25,18 +25,21 @@ def clean_data(df):
         categories[column] = categories[column].apply(lambda x: x[-1])
         # convert column from string to numeric
         categories[column] = categories[column].astype(int)
+        #Clean categories with non binary numbers
+        categories[column] = categories[column].apply(lambda x: 0 if x <1 else 1)
     # drop the original categories column from `df`
     df=df.drop(['categories'], axis=1)
     # concatenate the original dataframe with the new `categories` dataframe
     df = pd.merge(df,categories,left_index=True,right_index=True)  
     # drop duplicates
     df=df.drop_duplicates()
+    assert len(df[df.duplicated()]) == 0
     return df
 
 
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql("DisasterResponse", engine, index=False) 
+    df.to_sql("DisasterResponse", engine, index=False,if_exists='replace') 
 
 def main():
     if len(sys.argv) == 4:
