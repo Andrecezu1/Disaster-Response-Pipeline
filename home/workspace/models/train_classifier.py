@@ -11,6 +11,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 import pickle
 from sklearn.model_selection import GridSearchCV
@@ -30,6 +31,16 @@ from sklearn.multioutput import MultiOutputClassifier
 from sklearn.linear_model import LogisticRegression
 
 def load_data(database_filepath):
+    '''
+    load data
+    Functon that loads the data from a sqlite database
+    Input:
+    database_filepath filepath where the database can be found
+    Returns:
+    X  database with the messages
+    Y database with the category classigication per message
+    category_names list of category names
+    '''
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df = pd.read_sql_table("DisasterResponse",'sqlite:///{}'.format(database_filepath))
     X = df['message']
@@ -38,6 +49,14 @@ def load_data(database_filepath):
     return X, Y, category_names
 
 def tokenize(text):
+    '''
+    tokenize
+    Functon that tokenize the text given
+    Input:
+    text string to be tokenized
+    Returns:
+    clean_tokens a list of cleaned tokens per text given
+    '''
     # tokenize text
     tokens = word_tokenize(text)
     # Remove stop words
@@ -55,18 +74,24 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    Build model
+    Functon that build the model used to classify the tokens
+    Returns:
+    cv a model tunned with grid search
+    '''
     # Define the model
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
-    parameters = {
-    'clf__estimator__n_estimators': [10, 20],
-    'clf__estimator__max_depth':[5,10],
-    'clf__estimator__min_samples_split': [2, 4],
-    }
-    cv = GridSearchCV(pipeline, param_grid=parameters, cv=5, n_jobs=-1)
+    parameters = [{
+        'clf__n_estimators': [100, 200, 300],
+        'clf__max_depth': [None,5, 10],
+        'clf__min_samples_split': [2, 5, 10]
+    }]
+    cv = GridSearchCV(pipeline, param_grid=parameters)
     return(cv)
 
 
