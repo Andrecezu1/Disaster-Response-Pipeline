@@ -42,8 +42,15 @@ The data was given by Udacity and consist in four files:
 There are two (2) notebooks and one zip file:
 1. "ETL Pipeline Preparation.ipynb" is the ETL pipeline used to prepare the data.
 2. "ML Pipeline Preparation.ipynb" is the pipeline that trains a classifier to analyze the data.
-3. "home.zip" is a folder that contains the code to develop the project.
-4. "Disasters.html"  is the web page where the search can be done.
+3. In the home folder you can find all the files you need to run the project. 
+3.1 disaster_categories.csv File with the categories of the messages
+3.2 disaster_messages.csv file with the messages
+3.3 process_data.py code to load and transform the data that set the clean data in a database.
+3.4 train_classifier.py code that set the model which will classify the text of the messages.
+3.5 run.py python code that create the web page
+3.6 go.htlm html code used to classify the message entered in the page
+3.7 master.html code used to create the web page.
+5. "Disasters.html"  is the web page where the search can be done.
 
 ## Results<a name="results"></a>
 
