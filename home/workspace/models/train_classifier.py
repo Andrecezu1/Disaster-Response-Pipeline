@@ -11,7 +11,9 @@ from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.corpus import stopwords
 import pickle
+from sklearn.model_selection import GridSearchCV
 
 nltk.download(['punkt', 'wordnet'])
 
@@ -37,17 +39,18 @@ def load_data(database_filepath):
 
 def tokenize(text):
     # tokenize text
-    words = word_tokenize(text)
+    tokens = word_tokenize(text)
+    # Remove stop words
+    stop_words=set(stopwords.words('english'))
+    tokens = [tok for tok in tokens if tok not in stop_words]
     # initiate lemmatizer
     lemmatizer = WordNetLemmatizer()
     # iterate through each token
     clean_tokens = []
-    for tok in words:
-        
+    for tok in tokens:
         # lemmatize, normalize case, and remove leading/trailing white space
         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
         clean_tokens.append(clean_tok)
-
     return clean_tokens
 
 
@@ -58,7 +61,13 @@ def build_model():
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
-    return(pipeline)
+    parameters = {
+    'clf__estimator__n_estimators': [10, 20],
+    'clf__estimator__max_depth':[5,10],
+    'clf__estimator__min_samples_split': [2, 4],
+    }
+    cv = GridSearchCV(pipeline, param_grid=parameters, cv=5, n_jobs=-1)
+    return(cv)
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -71,7 +80,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
-    with open('trained_model.pkl', 'wb') as model_filepath:
+    with open(model_filepath, 'wb') as model_filepath:
         pickle.dump(model, model_filepath)
 
 
