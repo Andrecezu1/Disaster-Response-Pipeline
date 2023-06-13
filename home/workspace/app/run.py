@@ -4,6 +4,7 @@ import pandas as pd
 
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -30,7 +31,7 @@ engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterResponse', engine)
 
 # load model
-model = joblib.load("../trained_model.pkl")
+model = joblib.load('../models/classifier.pkl')
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -41,9 +42,12 @@ def index():
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    genre_names = list(genre_counts.index) 
     
     # create visuals
+    Y = df.iloc[:, 4:]
+    class_count = Y.sum()
+    class_names = list(class_count.index)
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
@@ -63,9 +67,28 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+        {
+            'data': [
+                Bar(
+                    x=class_names,
+                    y=class_count
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message classes',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Class"
+                }
+            }
         }
     ]
     
+ 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
