@@ -15,6 +15,7 @@ nltk.download('stopwords')
 from nltk.corpus import stopwords
 import pickle
 from sklearn.model_selection import GridSearchCV
+from keras.callbacks import EarlyStopping
 
 nltk.download(['punkt', 'wordnet'])
 
@@ -87,15 +88,24 @@ def build_model():
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
     parameters = [{
-        'clf__n_estimators': [100, 200, 300],
-        'clf__max_depth': [None,5, 10],
-        'clf__min_samples_split': [2, 5, 10]
+        'clf__estimator__n_estimators': [100, 300],
+        'clf__estimator__max_depth': [5, 10],
+        'clf__estimator__min_samples_split': [2, 5]
     }]
-    cv = GridSearchCV(pipeline, param_grid=parameters)
-    return(cv)
+    cv = GridSearchCV(pipeline, param_grid=parameters,cv=3, scoring='accuracy',n_jobs=-1)
+    return(pipeline)
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    '''
+    Evaluate model
+    Function that print the result of the model evaluated in the test set
+    Input:
+    model the trained model
+    X_test the set of messages used to test the model
+    Y_test the classification of the test messages
+    category_names the list of category names
+    '''
     # predict on test data
     y_pred = model.predict(X_test)
     # iterate over columns and print classification report for each
@@ -105,11 +115,24 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    '''
+    save model
+    Function that saves the trained model
+    Input:
+    model the trained model
+    model_filepath the filepath where the model is going to be saved
+    Output:
+    saved model
+    '''
     with open(model_filepath, 'wb') as model_filepath:
         pickle.dump(model, model_filepath)
 
 
 def main():
+    '''
+    main
+    Main function that process the functions to return the model.
+    '''
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
@@ -117,9 +140,11 @@ def main():
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
+        
         model = build_model()
         
         print('Training model...')
+        # fit model
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
